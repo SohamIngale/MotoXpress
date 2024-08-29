@@ -1,6 +1,7 @@
 package com.moto.xpress.service;
 
 import com.moto.xpress.model.AuthenticationResponse;
+import com.moto.xpress.model.Role;
 import com.moto.xpress.model.Token;
 import com.moto.xpress.model.User;
 import com.moto.xpress.repository.TokenRepository;
@@ -44,15 +45,15 @@ public class AuthenticationService {
 
         // check if user already exist. if exist than authenticate the user
         if(repository.findByEmailId(request.getEmailId()).isPresent()) {
-            return new AuthenticationResponse(null, null,"User already exist");
+            return new AuthenticationResponse(null, null,"User already exist", null);
         }
 
         User user = new User();
         user.setEmailId(request.getEmailId());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setUserFullname(request.getUserFullname());
+        user.setUserFullName(request.getUserFullName());
 
-        user.setRole(request.getRole());
+        user.setRole(Role.CUSTOMER);
 
         user = repository.save(user);
 
@@ -61,7 +62,7 @@ public class AuthenticationService {
 
         saveUserToken(accessToken, refreshToken, user);
 
-        return new AuthenticationResponse(accessToken, refreshToken,"User registration was successful");
+        return new AuthenticationResponse(accessToken, refreshToken,"User registration was successful", refreshToken);
 
     }
 
@@ -70,19 +71,21 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(
                         request.getEmailId(),
                         request.getPassword()
+                        
                 )
         );
 
         User user = repository.findByEmailId(request.getEmailId()).orElseThrow();
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
+        String userId = user.getUserId().toString(); // Convert userId to String
 
         revokeAllTokenByUser(user);
         saveUserToken(accessToken, refreshToken, user);
 
-        return new AuthenticationResponse(accessToken, refreshToken, "User login was successful");
-
+        return new AuthenticationResponse(accessToken, refreshToken, "User login was successful", userId);
     }
+
     private void revokeAllTokenByUser(User user) {
         List<Token> validTokens = tokenRepository.findAllAccessTokensByUser(user.getUserId());
         if(validTokens.isEmpty()) {
@@ -132,7 +135,7 @@ public class AuthenticationService {
             revokeAllTokenByUser(user);
             saveUserToken(accessToken, refreshToken, user);
 
-            return new ResponseEntity(new AuthenticationResponse(accessToken, refreshToken, "New token generated"), HttpStatus.OK);
+            return new ResponseEntity(new AuthenticationResponse(accessToken, refreshToken, "New token generated", refreshToken), HttpStatus.OK);
         }
 
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);

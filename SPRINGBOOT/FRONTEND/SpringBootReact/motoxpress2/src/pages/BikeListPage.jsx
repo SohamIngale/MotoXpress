@@ -43,6 +43,8 @@ const BikeListPage = () => {
     try {
       const response = await BikeService.getAllBikes();
       setBikes(response.data);
+      console.log(bikes);
+
     } catch (error) {
       console.error('Failed to fetch bikes:', error);
     }

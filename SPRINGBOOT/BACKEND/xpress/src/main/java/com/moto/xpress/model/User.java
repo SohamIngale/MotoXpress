@@ -127,15 +127,16 @@ public class User implements UserDetails{
         this.role = role;
     }
     
-    public String getUserFullname() {
+    
+    public String getUserFullName() {
 		return userFullName;
 	}
 
-	public void setUserFullname(String userFullname) {
-		this.userFullName = userFullname;
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
 	}
-    
-    @Override
+
+	@Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }

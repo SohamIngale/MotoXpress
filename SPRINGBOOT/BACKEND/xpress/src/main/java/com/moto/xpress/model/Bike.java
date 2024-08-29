@@ -1,9 +1,11 @@
-package com.moto.xpress.model;
+ package com.moto.xpress.model;
 
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Bike {
@@ -14,6 +16,7 @@ public class Bike {
 
     private String bikeName;
     
+    @Column(unique = true)
     private String bikeNumber;
     
     private String bikeDescription;
@@ -29,6 +32,9 @@ public class Bike {
     @JoinColumn(name = "AvailableCityId")
     private City availableCity;
     
+    
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "bike")
     private List<RentalRecord> rentalRecords;
 

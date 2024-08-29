@@ -2,9 +2,7 @@ package com.moto.xpress.controller;
 
 import com.moto.xpress.model.User;
 import com.moto.xpress.service.UserService;
-
 import jakarta.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,5 +61,13 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // Endpoint to get user by email ID
+    @RolesAllowed({"SUPERUSER","ADMIN","CUSTOMER"})
+    @GetMapping("/email")
+    public ResponseEntity<User> getUserByEmail(@RequestParam String emailId) {
+        Optional<User> user = userService.findByEmailId(emailId);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

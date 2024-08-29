@@ -26,8 +26,6 @@ public class JwtService {
     @Value("${application.security.jwt.refresh-token-expiration}")
     private long refreshTokenExpire;
 
-
-    
     private final TokenRepository tokenRepository;
 
     public JwtService(TokenRepository tokenRepository) {
@@ -38,27 +36,28 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
 
     public boolean isValid(String token, UserDetails user) {
         String emailId = extractEmailId(token);
-        
         boolean validToken = tokenRepository
                 .findByAccessToken(token)
                 .map(t -> !t.isLoggedOut())
                 .orElse(false);
-        System.out.println(user.getUsername());
-        return (emailId.equals(user.getUsername())) && !isTokenExpired(token) && validToken;
+
+        return emailId.equals(user.getUsername()) && !isTokenExpired(token) && validToken;
     }
 
     public boolean isValidRefreshToken(String token, User user) {
         String emailId = extractEmailId(token);
-
         boolean validRefreshToken = tokenRepository
                 .findByRefreshToken(token)
                 .map(t -> !t.isLoggedOut())
                 .orElse(false);
 
-        return (emailId.equals(user.getEmailId())) && !isTokenExpired(token) && validRefreshToken;
+        return emailId.equals(user.getEmailId()) && !isTokenExpired(token) && validRefreshToken;
     }
 
     private boolean isTokenExpired(String token) {
@@ -76,33 +75,31 @@ public class JwtService {
 
     public Claims extractAllClaims(String token) {
         return Jwts
-                .parserBuilder()  // Correct method to build the parser
-                .setSigningKey(getSigninKey())  // Set the signing key here
-                .build()  // Build the parser
-                .parseClaimsJws(token)  // Parse the token and retrieve the claims
-                .getBody();  // Get the body of the JWT, which contains the claims
+                .parserBuilder()
+                .setSigningKey(getSigninKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
-
 
     public String generateAccessToken(User user) {
         return generateToken(user, accessTokenExpire);
     }
 
     public String generateRefreshToken(User user) {
-        return generateToken(user, refreshTokenExpire );
+        return generateToken(user, refreshTokenExpire);
     }
 
     private String generateToken(User user, long expireTime) {
-        String token = Jwts
+        return Jwts
                 .builder()
                 .setSubject(user.getEmailId())
+                .claim("userId", user.getUserId())
                 .claim("roles", user.getRole())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expireTime ))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .signWith(getSigninKey())
                 .compact();
-
-        return token;
     }
 
     private SecretKey getSigninKey() {

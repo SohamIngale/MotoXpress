@@ -13,20 +13,14 @@ public class RentalRecord {
     private Long rentalRecordId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "bike_id")
+    @JoinColumn(name = "bike_id", referencedColumnName = "bikeId")
     private Bike bike;
 
-    @ManyToOne
-    @JoinColumn(name = "pickupCity_id")
-    private City pickupCity;
     
-    @ManyToOne
-    @JoinColumn(name = "dropOffCity_id")
-    private City dropOffCity;
     
     private LocalDateTime rentalStartDate;
     
@@ -62,21 +56,6 @@ public class RentalRecord {
 		this.bike = bike;
 	}
 
-	public City getPickupCity() {
-		return pickupCity;
-	}
-
-	public void setPickupCity(City pickupCity) {
-		this.pickupCity = pickupCity;
-	}
-
-	public City getDropOffCity() {
-		return dropOffCity;
-	}
-
-	public void setDropOffCity(City dropOffCity) {
-		this.dropOffCity = dropOffCity;
-	}
 
 	public LocalDateTime getRentalStartDate() {
 		return rentalStartDate;

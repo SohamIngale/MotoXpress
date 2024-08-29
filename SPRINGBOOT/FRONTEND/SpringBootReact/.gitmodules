@@ -1,0 +1,3 @@
+[submodule "motoxpress2"]
+	path = motoxpress2
+	url = https://github.com/SohamIngale/MotoXpress.git

@@ -22,9 +22,10 @@ public class BikeController {
     @GetMapping
     public ResponseEntity<List<Bike>> getAllBikes() {
         List<Bike> bikes = bikeService.findAll();
-        return ResponseEntity.ok(bikes);
+        return ResponseEntity.ok(bikes);	
     }
     
+    @RolesAllowed({"ADMIN","SUPERUSER","CUSTOMER"})
     @GetMapping("/{id}")
     public ResponseEntity<Bike> getBikeById(@PathVariable Long id) {
         Optional<Bike> bike = bikeService.findById(id);

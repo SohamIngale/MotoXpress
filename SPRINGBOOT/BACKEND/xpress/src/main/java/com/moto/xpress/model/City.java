@@ -18,11 +18,7 @@ public class City {
     @OneToMany(mappedBy = "availableCity")
     private List<Bike> bikes;
     
-    @OneToMany(mappedBy = "pickupCity")
-    private List<RentalRecord> pickupRentalRecords;
-
-    @OneToMany(mappedBy = "dropOffCity")
-    private List<RentalRecord> dropOffRentalRecords;
+    
 
 	public Long getCityId() {
 		return cityId;
@@ -56,21 +52,7 @@ public class City {
 		this.bikes = bikes;
 	}
 
-	public List<RentalRecord> getPickupRentalRecords() {
-		return pickupRentalRecords;
-	}
-
-	public void setPickupRentalRecords(List<RentalRecord> pickupRentalRecords) {
-		this.pickupRentalRecords = pickupRentalRecords;
-	}
-
-	public List<RentalRecord> getDropOffRentalRecords() {
-		return dropOffRentalRecords;
-	}
-
-	public void setDropOffRentalRecords(List<RentalRecord> dropOffRentalRecords) {
-		this.dropOffRentalRecords = dropOffRentalRecords;
-	}
+	
     
 	
 }

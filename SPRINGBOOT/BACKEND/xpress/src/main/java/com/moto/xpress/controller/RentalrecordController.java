@@ -33,7 +33,7 @@ public class RentalrecordController {
         return rentalrecord.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @RolesAllowed({"CUSTOMER","SUPERUSER"})
+    @RolesAllowed({"CUSTOMER","SUPERUSER","ADMIN"})
     @PostMapping
     public ResponseEntity<RentalRecord> createRentalrecord(@RequestBody RentalRecord rentalrecord) {
     	RentalRecord createdRentalrecord = rentalRecordService.save(rentalrecord);

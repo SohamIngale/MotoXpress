@@ -43,12 +43,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         req->req.requestMatchers("/login/**","/register/**", "/refresh_token/**").permitAll()
-                                .requestMatchers("/api/users").authenticated()
+                                .requestMatchers("/api/users").permitAll()
                                 .requestMatchers("/api/bikes").permitAll()
                                 .requestMatchers("/api/cities").permitAll()
-                                .requestMatchers("/api/rentalrecords").authenticated()
-                                .requestMatchers("/api/userprofiles").authenticated()
-                                .anyRequest().authenticated()
+                                .requestMatchers("/api/rentalrecords").permitAll()
+                                .requestMatchers("/api/userprofiles").permitAll()
+                                .anyRequest().permitAll()
                 ).userDetailsService(userDetailsServiceImp)
                 .sessionManagement(session->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

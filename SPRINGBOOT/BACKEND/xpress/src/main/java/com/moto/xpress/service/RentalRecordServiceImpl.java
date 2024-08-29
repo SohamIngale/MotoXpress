@@ -24,8 +24,10 @@ public class RentalRecordServiceImpl implements RentalRecordService {
         return rentalRecordRepository.findById(id);
     }
 
+    
     @Override
     public RentalRecord save(RentalRecord rentalrecord) {
+    	rentalrecord.setPaymentConfirmation(true);
         return rentalRecordRepository.save(rentalrecord);
     }
 
